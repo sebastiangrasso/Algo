@@ -39,8 +39,12 @@ public class Pathfinder {
             // TODO: If that node's state is the goal (see problem's isGoal method),
             // you're done! Return the solution
             // [Hint] Use a helper method to collect the solution from the current node!
-            if (problem.isGoal(curr.state)) {
-            	//insert helper method call to collect solution
+            if (problem.isGoal(curr.state)) {         	
+              	ArrayList <String> sol = retrace(curr);
+            	int [] test = problem.testSolution(sol);
+            	if (test[0] == 1) {
+            		return sol;
+            	}
             }
             
             // TODO: Otherwise, must generate children to keep searching. So, use the
@@ -51,6 +55,7 @@ public class Pathfinder {
             // [Hint] Look up how to iterate through <key, value> pairs in a Map -- an
             // example of this is already done in the MazeProblem's getTransitions method
             for (Map.Entry<String, MazeState> options : moves.entrySet()) {
+            	
                 // TODO: ...add a new SearchTreeNode to the frontier with the appropriate
                 // action, state, and parent
             	SearchTreeNode temp = new SearchTreeNode(options.getValue(), options.getKey(), curr);
@@ -60,6 +65,24 @@ public class Pathfinder {
         // Should never get here, but just return null to make the compiler happy
         return null;
 }
+    
+    
+// Helper method designed to obtain path to solution
+// Method begins at GOAL_STATE and works through parent nodes to obtain actions    
+public static ArrayList<String> retrace(SearchTreeNode end) {
+	
+	ArrayList <String> steps = new ArrayList <String>();
+	SearchTreeNode curr = end;
+	
+	while (curr.parent!= null) {
+		steps.add(0, end.action);
+		curr = end.parent;	
+	}
+	
+	return steps;
+	
+}
+    
 }    
 
 /**
