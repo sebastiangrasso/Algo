@@ -54,8 +54,7 @@ public class Pathfinder {
             // TODO: ...and *for each* of those transition states...
             // [Hint] Look up how to iterate through <key, value> pairs in a Map -- an
             // example of this is already done in the MazeProblem's getTransitions method
-            for (Map.Entry<String, MazeState> options : moves.entrySet()) {
-            	
+            for (Map.Entry<String, MazeState> options : moves.entrySet()) {          	
                 // TODO: ...add a new SearchTreeNode to the frontier with the appropriate
                 // action, state, and parent
             	SearchTreeNode temp = new SearchTreeNode(options.getValue(), options.getKey(), curr);
@@ -75,12 +74,12 @@ public static ArrayList<String> retrace(SearchTreeNode end) {
 	SearchTreeNode curr = end;
 	
 	while (curr.parent!= null) {
-		steps.add(0, end.action);
-		curr = end.parent;	
+		steps.add(0, curr.action);
+		curr = curr.parent;	
 	}
 	
 	return steps;
-	
+
 }
     
 }    
