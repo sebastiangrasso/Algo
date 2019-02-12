@@ -1,8 +1,10 @@
 package pathfinder.informed;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 
 /**
@@ -23,7 +25,8 @@ public class Pathfinder {
         // TODO: Initialize frontier -- what data structure should you use here for
         // breadth-first search? Recall: The frontier holds SearchTreeNodes!
         PriorityQueue<SearchTreeNode> frontier = new PriorityQueue <SearchTreeNode>();
-        
+        Set <MazeState> graveyard = new HashSet<>();       
+                
         // TODO: Add new SearchTreeNode representing the problem's initial state to the
         // frontier. Since this is the initial state, the node's action and parent will
         // be null
@@ -34,8 +37,8 @@ public class Pathfinder {
         while (frontier.isEmpty() == false) {
            
         	// TODO: Get the next node to expand by the ordering of breadth-first search
-            SearchTreeNode curr = frontier.remove();            
-        	
+            SearchTreeNode curr = frontier.remove();
+            graveyard.add(curr.state);        	
             // TODO: If that node's state is the goal and the path has already visited the key (see problem's isGoal method),
             // you're done! Return the solution
             // [Hint] Use a helper method to collect the solution from the current node!
@@ -43,7 +46,6 @@ public class Pathfinder {
               	ArrayList <String> sol = retrace(curr);
             	int [] test = problem.testSolution(sol);
             	if (test[0] == 1) {
-            		System.out.println(curr.historyScore);
             		return sol;
             	}
             }
@@ -73,8 +75,13 @@ public class Pathfinder {
             	temp.manhattanScore = minManhattanScore;
             	}
             	else temp.manhattanScore = manhattan(temp, problem.KEY_STATE);
-            	            	            	
-            	frontier.add(temp);
+            	
+             	if (graveyard.contains(temp.state)==false) {
+             		frontier.add(temp);             		
+            	}
+             	else if (problem.visitedKey) {
+             		frontier.add(temp);
+             	}
             }
         }
         // If the frontier is empty, all nodes have been expanded with no solution found
@@ -145,6 +152,10 @@ class SearchTreeNode implements Comparable<SearchTreeNode>{
     	return this.fScore - a.fScore;
     }
     
+    public boolean compare(SearchTreeNode a) {
+    	
+    	return true;
+    }
     
 }
 
