@@ -59,12 +59,23 @@ public class NimPlayer {
     			//retrace through every node above goal node and score the path
     			//node score = off # of actions between node and goal
     			//adding to visited <GameTreeNode, score>
+    			
+    			GameTreeNode retrace = curr;
+    			while (retrace.isMax == false) {
+    				
+    				
+    				
+    				retrace = retrace
+    			}
+    			
     		}	
     	
             Map<Integer,GameTreeNode> moves = curr.getActions(MAX_REMOVAL);
 
+            //when expanding, after a node is generated and added to the frontier
+            //the node should also be added to curr.Children (arrayList of children)
     	
-    	
+            
     	
     	
     	
