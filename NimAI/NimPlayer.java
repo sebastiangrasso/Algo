@@ -27,7 +27,7 @@ public class NimPlayer {
         GameTreeNode root = new GameTreeNode(remaining, 0, true);
         Map <GameTreeNode, Integer> memoBank = new HashMap<GameTreeNode, Integer>();
                 
-    	alphaBetaMinimax(root, root.score, root.score, true, memoBank);
+    	alphaBetaMinimax(root, Integer.MAX_VALUE, Integer.MIN_VALUE, true, memoBank);
     	
     	//The call to alphaBetaMinMinimax returns an int for a score and
     	//generates our SearchTree. Implement code to select a certain action
@@ -51,14 +51,14 @@ public class NimPlayer {
         Stack<GameTreeNode> frontier = new Stack<GameTreeNode>();
     	frontier.add(node);
         
-        
-    	while (frontier.isEmpty() == false) {
+      	while (frontier.isEmpty() == false) {
     		
     		GameTreeNode curr = frontier.remove(0);
-//score? 	visited.put(curr, curr.score);    		
-    	
-    		if (curr.isGoal()) { //write is goal method
-    			//what should we do if we find the goal?
+  		    	
+    		if (curr.isGoal(visited)) { 
+    			//retrace through every node above goal node and score the path
+    			//node score = off # of actions between node and goal
+    			//adding to visited <GameTreeNode, score>
     		}	
     	
             Map<Integer,GameTreeNode> moves = curr.getActions(MAX_REMOVAL);
@@ -133,8 +133,8 @@ class GameTreeNode {
     	
     }
     
-    public boolean isGoal() {
-    	return (this.remaining == 0);    	
+    public boolean isGoal(Map<GameTreeNode, Integer> visited) {	
+    	return (this.remaining == 0 || visited.containsKey(this));    	
     }
       
         
