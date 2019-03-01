@@ -73,7 +73,7 @@ public class NimPlayer {
     	
     		
     	
-    	
+    return 1;	
     }
     
     
@@ -125,16 +125,19 @@ class GameTreeNode {
     public Map<Integer, GameTreeNode> getActions(int max){
     	int r = this.remaining;
     	Map<Integer, GameTreeNode> possActions = new HashMap<Integer, GameTreeNode>();
+    	for (int stoneRemoval = 1; stoneRemoval <= max && stoneRemoval <= r; stoneRemoval++) {
+    		GameTreeNode temp = new GameTreeNode(r-stoneRemoval, stoneRemoval, false);
+    		possActions.put(temp.action, temp);
+    	}
+    	return possActions;
     	
     }
     
     public boolean isGoal() {
-    	
+    	return (this.remaining == 0);    	
     }
+      
+        
     
-    
-    
-    
-    
-    
+	}   
 }
