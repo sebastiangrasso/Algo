@@ -25,20 +25,17 @@ public class NimPlayer {
      */
     public int choose(int remaining) {
         GameTreeNode root = new GameTreeNode(remaining, 0, true);
-        Map <GameTreeNode, Integer> visited = new HashMap<GameTreeNode, Integer>();
-        alphaBetaMinimax(root, Integer.MAX_VALUE, Integer.MIN_VALUE, true, visited);
+        Map <GameTreeNode, Integer> visited = new HashMap<>();
+        
+        alphaBetaMinimax(root, Integer.MIN_VALUE, Integer.MAX_VALUE, true, visited);
    	 
         int action = -1;
-        int bestScore = -1;  
+        int high = -1;  
        	
-    	for  (GameTreeNode curr: root.children) {
-    		
-    		int currentScore = curr.score;
-    		int currentAction = curr.action;
-    		
-    		if (bestScore < currentScore) {
-    			action = currentAction;
-    			bestScore = currentScore;
+    	for  (GameTreeNode curr: root.children) {	
+    		if (high < curr.score) {
+    			action = curr.action;
+    			high = curr.score;
     		}
     	}
     	return action;
