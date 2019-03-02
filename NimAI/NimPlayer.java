@@ -75,44 +75,37 @@ public class NimPlayer {
     		    		
     		else if (isMax) {    	            
     	        for (Map.Entry<Integer, Integer> actions : moves.entrySet()) {          	
-    	        GameTreeNode temp = new GameTreeNode(actions.getKey(),actions.getValue(), !curr.isMax);            	
+    	        	GameTreeNode temp = new GameTreeNode(actions.getKey(),actions.getValue(), !curr.isMax);            	
     	               	
-    	       	if (visited.containsKey(temp)==false) {
-    	       		frontier.add(temp);
-    	       		curr.children.add(temp);
+    	        	if (visited.containsKey(temp)==false) {
+    	        		frontier.add(temp);
+    	        		curr.children.add(temp);
     	            		
-    	      		temp.score = Math.max(Integer.MIN_VALUE, alphaBetaMinimax(temp, alpha, beta, false, visited));
-    	      		alpha = Math.max(alpha, curr.score);
-    	            		if (beta <= alpha) 
-    	            	break;
-    	            	return curr.score;
-    	            	}
+    	        		temp.score = Math.max(Integer.MIN_VALUE, alphaBetaMinimax(temp, alpha, beta, false, visited));
+    	        		alpha = Math.max(alpha, temp.score);
+    	        		if (beta <= alpha) 
+    	        			break;
+    	        		return temp.score;
     	            }
-    	        }   	
-    	        else {
-    	            	curr.score = Integer.MAX_VALUE;
-    	            	for (Map.Entry<Integer, Integer> actions : moves.entrySet()) {          	
-        	               	GameTreeNode temp = new GameTreeNode(actions.getKey(),actions.getValue(), !curr.isMax);            	
+    	        }
+    	    }   	
+    	    else {
+    	         for (Map.Entry<Integer, Integer> actions : moves.entrySet()) {          	
+    	        	 GameTreeNode temp = new GameTreeNode(actions.getKey(),actions.getValue(), !curr.isMax);            	
         	               	
-        	            	if (visited.containsKey(temp)==false) {
-        	            		frontier.add(temp);
-        	            		curr.children.add(temp);
+    	        	 if (visited.containsKey(temp)==false) {
+    	        		 frontier.add(temp);
+    	        		 curr.children.add(temp);
         	            		
-        	            		temp.score = Math.min(temp.score, alphaBetaMinimax(temp, alpha, beta, false, visited));
-        	            		alpha = Math.min(alpha, temp.score);
-        	            		if (beta <= alpha) 
+    	        		 temp.score = Math.min(temp.score, alphaBetaMinimax(temp, alpha, beta, false, visited));
+    	        		 alpha = Math.min(alpha, temp.score);
+    	        		 if (beta <= alpha) 
         	            	break;
-        	            	return curr.score;    	            	
-    	            }
-    	            }
-
-    			}
-    				
-    	            }	
-    				
-    			
-    			}
-    			
+    	        		 return curr.score;    	            	
+    	        	 }
+    	          }
+    	    }
+    }	   			
     	    	
     return node.score;	
     }
