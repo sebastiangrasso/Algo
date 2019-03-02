@@ -25,18 +25,20 @@ public class NimPlayer {
      */
     public int choose(int remaining) {
         GameTreeNode root = new GameTreeNode(remaining, 0, true);
-        Map <GameTreeNode, Integer> memoBank = new HashMap<GameTreeNode, Integer>();
-        int action = 1;
-        int bestScore = -1;
-        
-    	alphaBetaMinimax(root, Integer.MAX_VALUE, Integer.MIN_VALUE, true, memoBank);
-    	    	
-    	for  (int i = 0; i < root.children.size(); i++) {
-    		GameTreeNode curr = root.children.get(i);
-    		System.out.println(bestScore + " " + curr.score);
-    		if (bestScore < curr.score) {
-    			bestScore = curr.score;
-    			action = curr.action;
+        Map <GameTreeNode, Integer> visited = new HashMap<GameTreeNode, Integer>();
+        alphaBetaMinimax(root, Integer.MAX_VALUE, Integer.MIN_VALUE, true, visited);
+   	 
+        int action = -1;
+        int bestScore = -1;  
+       	
+    	for  (GameTreeNode curr: root.children) {
+    		
+    		int currentScore = curr.score;
+    		int currentAction = curr.action;
+    		
+    		if (bestScore < currentScore) {
+    			action = currentAction;
+    			bestScore = currentScore;
     		}
     	}
     	return action;
@@ -55,24 +57,23 @@ public class NimPlayer {
      */
     private int alphaBetaMinimax (GameTreeNode node, int alpha, int beta, boolean isMax, Map<GameTreeNode, Integer> visited) {
           		  		    	
-    if (node.remaining == 0) {  				
- 		if (isMax) {
- 			return 1;
-   		}
-   		else return 0;
+    if (node.remaining == 0 && node.isMax) {
+    	return 0;	
+    } else if (node.remaining == 0 && !node.isMax) {
+   	    return 1;
     }
     		
    	if (node.isMax) {
    		node.score = Integer.MIN_VALUE; 
     		
     	for (int remove = 1; remove <= Math.min(MAX_REMOVAL, node.remaining); remove++) {
-    		GameTreeNode child = new GameTreeNode(node.remaining - remove, remove, false);		
+    		GameTreeNode child = new GameTreeNode(node.remaining - remove, remove, !isMax);		
 
     		if (visited.containsKey(child)) {
 				child.score = visited.get(child);
 			}
    			else {
-   				child.score = alphaBetaMinimax(child, alpha, beta, false, visited);
+   				child.score = alphaBetaMinimax(child, alpha, beta, !isMax, visited);
    				visited.put(child, child.score);
    			}
     			
@@ -88,13 +89,13 @@ public class NimPlayer {
     	else {
     		node.score = Integer.MAX_VALUE;
         	for (int remove = 1; remove <= Math.min(MAX_REMOVAL, node.remaining); remove++) {
-        		GameTreeNode child = new GameTreeNode(node.remaining - remove, remove, false);		
+        		GameTreeNode child = new GameTreeNode(node.remaining - remove, remove, !isMax);		
     		    		    		
     			if (visited.containsKey(child)) {
 					child.score = visited.get(child);
 				}
     			else {
-    				child.score = alphaBetaMinimax(child, alpha, beta, true, visited);
+    				child.score = alphaBetaMinimax(child, alpha, beta, !isMax, visited);
     				visited.put(child, child.score);
     			}
     			
@@ -154,11 +155,6 @@ class GameTreeNode {
     @Override
     public int hashCode () {
         return remaining + ((isMax) ? 1 : 0);
-    }
-    
-    
-    public boolean isGoal() {	
-    	return (this.remaining == 0);    	
     }
     
 }   
