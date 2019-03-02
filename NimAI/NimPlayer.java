@@ -2,7 +2,6 @@ package nim;
 
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Stack;
 import java.util.HashMap;
 
 /**
@@ -27,15 +26,18 @@ public class NimPlayer {
     public int choose(int remaining) {
         GameTreeNode root = new GameTreeNode(remaining, 0, true);
         Map <GameTreeNode, Integer> memoBank = new HashMap<GameTreeNode, Integer>();
-        int action = 1;    
+        int action = 1;
+        int bestScore = -1;
         
     	alphaBetaMinimax(root, Integer.MAX_VALUE, Integer.MIN_VALUE, true, memoBank);
-    	
+    	    	
     	for  (int i = 0; i < root.children.size(); i++) {
     		GameTreeNode curr = root.children.get(i);
-    	    if (curr.score == 1) {
-    	    	action = curr.action;
-    	    } 
+    		System.out.println(bestScore + " " + curr.score);
+    		if (bestScore < curr.score) {
+    			bestScore = curr.score;
+    			action = curr.action;
+    		}
     	}
     	return action;
    }
@@ -52,58 +54,60 @@ public class NimPlayer {
      *          from the given node
      */
     private int alphaBetaMinimax (GameTreeNode node, int alpha, int beta, boolean isMax, Map<GameTreeNode, Integer> visited) {
-        
-    	Stack<GameTreeNode> frontier = new Stack<GameTreeNode>();
-    	frontier.add(node);
-    	
-      	while (frontier.isEmpty() == false) {
+          		  		    	
+    if (node.remaining == 0) {  				
+ 		if (isMax) {
+ 			return 1;
+   		}
+   		else return 0;
+    }
     		
-      		GameTreeNode curr = frontier.pop();
-			
-      		Map<Integer,Integer> moves = curr.getActions(MAX_REMOVAL);    		
-  		    	
-    		if (curr.isGoal()) {  				
-    			if (isMax) {
-    				curr.score = 1;
+   	if (node.isMax) {
+   		node.score = Integer.MIN_VALUE; 
+    		
+    	for (int remove = 1; remove <= Math.min(MAX_REMOVAL, node.remaining); remove++) {
+    		GameTreeNode child = new GameTreeNode(node.remaining - remove, remove, false);		
+
+    		if (visited.containsKey(child)) {
+				child.score = visited.get(child);
+			}
+   			else {
+   				child.score = alphaBetaMinimax(child, alpha, beta, false, visited);
+   				visited.put(child, child.score);
+   			}
+    			
+   			node.score = Math.max(node.score, child.score);
+   			alpha = Math.max(alpha, node.score);
+   			node.children.add(child);
+   			if (beta <= alpha) {
+   				break;
+   			}
+    	}
+       	return node.score;		
+    	}   	        		    	                	        	    			
+    	else {
+    		node.score = Integer.MAX_VALUE;
+        	for (int remove = 1; remove <= Math.min(MAX_REMOVAL, node.remaining); remove++) {
+        		GameTreeNode child = new GameTreeNode(node.remaining - remove, remove, false);		
+    		    		    		
+    			if (visited.containsKey(child)) {
+					child.score = visited.get(child);
+				}
+    			else {
+    				child.score = alphaBetaMinimax(child, alpha, beta, true, visited);
+    				visited.put(child, child.score);
     			}
-    			else curr.score = 0; 
-    			return curr.score;
+    			
+    			node.score = Math.min(node.score, child.score);
+    			beta = Math.min(beta, node.score);
+    			node.children.add(child);
+    			if (beta <= alpha) {
+    				break;
+    			}
     		}
-    		
-	        for (Map.Entry<Integer, Integer> actions : moves.entrySet()) {          	
-	        	GameTreeNode child = new GameTreeNode(actions.getKey(),actions.getValue(), !curr.isMax);            	
-	        	visited.put(child, child.score); //right spot for this?    	        		
-	       		curr.children.add(child);	
-    		    		
-	       		if (curr.isMax) {
-	       			if (visited.containsKey(child)) {
-	       				child.score = visited.get(child);
-	       			}
-	       			else {
-	       				child.score = Math.max(child.score, alphaBetaMinimax(child, alpha, beta, false, visited));
-	       				alpha = Math.max(alpha, child.score);
-	       			}    	        	
-    	        	if (alpha < beta) {
-    	    	       	frontier.push(child);
-    	    	    }
-    	        	return child.score;    	        		    	                	        	
-	       		}
-	      		else {
-	      			if (visited.containsKey(child)) {
-	      				child.score = visited.get(child);
-	      			}
-	      			else {
-	      				child.score = Math.min(child.score, alphaBetaMinimax(child, alpha, beta, true, visited));
-	      				alpha = Math.min(beta, child.score);
-	      			}
-	      			if (alpha < beta) {
-   	    	       		frontier.push(child);
-    	    	    }	      			 
-    	    	   return child.score;    	        		    	               	        	
-    	        }
-	        }
-      	}       
-    	return 0;
+       		return node.score;		
+    	}	      			 
+    }
 }
     
     
@@ -152,19 +156,9 @@ class GameTreeNode {
         return remaining + ((isMax) ? 1 : 0);
     }
     
-    public Map<Integer, Integer> getActions(int max){
-    	int r = this.remaining;
-    	Map<Integer, Integer> possActions = new HashMap<Integer, Integer>();
-    	for (int stoneRemoval = 1; stoneRemoval <= max && stoneRemoval <= r; stoneRemoval++) {
-    		possActions.put(stoneRemoval, r - stoneRemoval);
-    	}
-    	return possActions;
-    	
-    }
     
     public boolean isGoal() {	
     	return (this.remaining == 0);    	
     }
     
 }   
-}
