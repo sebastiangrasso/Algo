@@ -85,7 +85,8 @@ public class NimPlayer {
     	        		alpha = Math.max(alpha, temp.score);
     	        		if (beta <= alpha) 
     	        			break;
-    	        		return temp.score;
+    	        		visited.put(temp, temp.score)
+    	        		return temp.score;    	        		
     	            }
     	        }
     	    }   	
@@ -97,11 +98,12 @@ public class NimPlayer {
     	        		 frontier.add(temp);
     	        		 curr.children.add(temp);
         	            		
-    	        		 temp.score = Math.min(temp.score, alphaBetaMinimax(temp, alpha, beta, false, visited));
+    	        		 temp.score = Math.min(temp.score, alphaBetaMinimax(temp, alpha, beta, true, visited));
     	        		 alpha = Math.min(alpha, temp.score);
     	        		 if (beta <= alpha) 
         	            	break;
-    	        		 return curr.score;    	            	
+    	        		 visited.put(temp, temp.score)
+    	        		 return temp.score;    	            	
     	        	 }
     	          }
     	    }
