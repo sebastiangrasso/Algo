@@ -47,21 +47,20 @@ public class LCS {
 
 		// if characters don't match
 		
-		Set <String> left = new HashSet<>();
-		Set <String> up = new HashSet<>(); 
+		Set <String> left = new HashSet<String>();
+		Set <String> up = new HashSet<String>(); 
 
 		// left vs top
-		if (memo[r - 1][c] > memo[r][c - 1])
+		if (memo[r - 1][c] >= memo[r][c - 1])
 			left = collectSolution(rStr, r-1, cStr, c, memo);
 
 		// top vs left
-		if (memo[r][c - 1] > memo[r - 1][c])
+		if (memo[r][c - 1] >= memo[r - 1][c])
 			up = collectSolution(rStr, r, cStr, c-1, memo);
 		
 		//merge two sets
 		left.addAll(up);
 		
-
 		return left;
 	}
 	
@@ -92,16 +91,14 @@ public class LCS {
 
     static int bottomUpTableFill( String rStr, String cStr, int rInd, int cInd, int memo[][]) { 
 
-    	for (int i=0; i<=rInd; i++) 
+    	for (int i=1; i<=rInd; i++) 
     	{ 
-    		for (int j=0; j<=cInd; j++) 
+    		for (int j=1; j<=cInd; j++) 
     		{ 
-    			if (i == 0 || j == 0) 
-    				memo[i][j] = 0; 
-    			else if (rStr.charAt(rInd - 1) == cStr.charAt(rInd - 1)) 
-          memo[i][j] = 1 + memo[i-1][j-1]; 
-    			else
-          memo[i][j] = Math.max(memo[i-1][j], memo[i][j-1]); 
+    		  if (rStr.charAt(i - 1) == cStr.charAt(j - 1)) 
+    			memo[i][j] = 1 + memo[i-1][j-1]; 
+    		else
+    				memo[i][j] = Math.max(memo[i-1][j], memo[i][j-1]); 
     		}
     	}	
     	return memo[rInd][cInd];
