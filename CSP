@@ -1,5 +1,7 @@
 package csp;
 
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -53,13 +55,13 @@ public class CSP {
 		} else {
 			int unassigned = selectUnassignedVariable(assignments);
 			for (LocalDate value : possDomains.get(unassigned)) {
-				if (isConsistent(constraints, value)) {
-					assignments.set(unassigned, value);
-					result = recursiveBackTrackingSearch(index+1, assignments, possDomains, constraints);
+				if (isConsistent(constraints, value, assignments, unassigned)) {
+					assignments.set(unassigned, value);}
+				result = recursiveBackTrackingSearch(index+1, assignments, possDomains, constraints);
 						if (result != null)
 							break;
 					}
-				}//spot to put filter in?
+				//spot to put filter in?
 				assignments.remove(unassigned);
 			}		
 		return result;
@@ -73,18 +75,37 @@ public class CSP {
 		return -1;
 	}
 	
-	public static boolean isConsistent(Set<DateConstraint> constraints, LocalDate curr) {
-		for (DateConstraint cons : constraints)
-			if (isSatisfiedWith(cons,curr)) //method for verifying assignment fits constraints
-				return false;
-		return true;
-	}
-	
-	public static boolean isSatisfiedWith(DateConstraint constraint, LocalDate curr) {
-		return true;
-	}
+	public static boolean isConsistent(Set<DateConstraint> constraints, LocalDate curr, ArrayList<LocalDate> assignments, int index) {
+		for (DateConstraint d : constraints) {
+            if (d.L_VAL == index) {
+            	LocalDate leftDate = curr,
+                rightDate = (d.arity() == 1) 
+                          ? ((UnaryDateConstraint) d).R_VAL 
+                          : assignments.get(((BinaryDateConstraint) d).R_VAL);
+            
+                boolean sat = false;
+                switch (d.OP) {
+                case "==": if (leftDate.isEqual(rightDate))  sat = true; break;
+                case "!=": if (!leftDate.isEqual(rightDate)) sat = true; break;
+                case ">":  if (leftDate.isAfter(rightDate))  sat = true; break;
+                case "<":  if (leftDate.isBefore(rightDate)) sat = true; break;
+                case ">=": if (leftDate.isAfter(rightDate) || leftDate.isEqual(rightDate))  sat = true; break;
+                case "<=": if (leftDate.isBefore(rightDate) || leftDate.isEqual(rightDate)) sat = true; break;
+                }
+                if (!sat) {
+                	return false;
+                }
+              }
+		}    
+        return true;     
+     }	
 	
 	public static boolean isComplete(ArrayList<LocalDate> assignments) {
+		for (int i=0; i<assignments.size();i++) {
+			if (assignments.get(i) != null) {
+				return false;
+			}
+		}
 		return true;
 	}
 
