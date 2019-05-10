@@ -48,7 +48,7 @@ public class CSP {
     }
 	public static ArrayList<LocalDate> recursiveBackTrackingSearch(int index, ArrayList<LocalDate> assignments, ArrayList<ArrayList<LocalDate>> possDomains, Set<DateConstraint> constraints) {
 		ArrayList <LocalDate> result = null;
-		if (assignments.isComplete())) { //some way of verifying assignments is complete
+		if (isComplete(assignments)) { //some way of verifying assignments is complete
 			result = assignments;
 		} else {
 			int unassigned = selectUnassignedVariable(assignments);
@@ -59,9 +59,8 @@ public class CSP {
 						if (result != null)
 							break;
 					}
-					info.restoreDomains(csp);
-				}
-				assignments.remove(var);
+				}//spot to put filter in?
+				assignments.remove(unassigned);
 			}		
 		return result;
 	}
@@ -84,7 +83,10 @@ public class CSP {
 	public static boolean isSatisfiedWith(DateConstraint constraint, LocalDate curr) {
 		return true;
 	}
-
+	
+	public static boolean isComplete(ArrayList<LocalDate> assignments) {
+		return true;
+	}
 
     
 }
