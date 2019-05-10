@@ -14,9 +14,6 @@ import java.util.List;
  * on the dates of each meeting.
  */
 public class CSP {
-	
-	
-	
 
     /**
      * Public interface for the CSP solver in which the number of meetings,
@@ -42,29 +39,30 @@ public class CSP {
     	
     	ArrayList<LocalDate> assignments = new ArrayList<LocalDate>(nMeetings);
     	
-		if (possDomains.get(index).isEmpty()) {
+		for(int i =0; i<possDomains.size(); i++) {
+			if (possDomains.get(i).isEmpty()) {
 				return null;
+			}
 		}
-		recursiveBackTrackingSearch(0, assignments, possDomains, constraints);
+		return recursiveBackTrackingSearch(0, assignments, possDomains, constraints);
     }
-	public static List<LocalDate> recursiveBackTrackingSearch(int index, ArrayList<LocalDate> assignments, ArrayList<ArrayList<LocalDate>> possDomains, Set<DateConstraint> constraints) {
+	public static ArrayList<LocalDate> recursiveBackTrackingSearch(int index, ArrayList<LocalDate> assignments, ArrayList<ArrayList<LocalDate>> possDomains, Set<DateConstraint> constraints) {
 		ArrayList <LocalDate> result = null;
 		if (assignments.isComplete())) { //some way of verifying assignments is complete
 			result = assignments;
 		} else {
 			int unassigned = selectUnassignedVariable(assignments);
 			for (LocalDate value : possDomains.get(unassigned)) {
-				if (isConsistent(constraints)) {
+				if (isConsistent(constraints, value)) {
 					assignments.set(unassigned, value);
-					result = recursiveBackTrackingSearch(index+1,);
+					result = recursiveBackTrackingSearch(index+1, assignments, possDomains, constraints);
 						if (result != null)
 							break;
 					}
 					info.restoreDomains(csp);
 				}
 				assignments.remove(var);
-			}
-		}
+			}		
 		return result;
 	}
 
@@ -76,10 +74,14 @@ public class CSP {
 		return -1;
 	}
 	
-	public static boolean isConsistent(Set<DateConstraint> constraints) {
+	public static boolean isConsistent(Set<DateConstraint> constraints, LocalDate curr) {
 		for (DateConstraint cons : constraints)
-			if (!cons.isSatisfiedWith(this))
+			if (isSatisfiedWith(cons,curr)) //method for verifying assignment fits constraints
 				return false;
+		return true;
+	}
+	
+	public static boolean isSatisfiedWith(DateConstraint constraint, LocalDate curr) {
 		return true;
 	}
 
