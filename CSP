@@ -57,7 +57,7 @@ public class CSP {
 			for (LocalDate value : possDomains.get(unassigned)) {
 				if (isConsistent(constraints, value, assignments, unassigned)) {
 					assignments.set(unassigned, value);}
-				result = recursiveBackTrackingSearch(index+1, assignments, possDomains, constraints);
+				    recursiveBackTrackingSearch(index+1, assignments, possDomains, constraints);
 						if (result != null)
 							break;
 					}
@@ -103,10 +103,10 @@ public class CSP {
 	public static boolean isComplete(ArrayList<LocalDate> assignments) {
 		for (int i=0; i<assignments.size();i++) {
 			if (assignments.get(i) != null) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
     
